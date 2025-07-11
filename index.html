@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureCrypt - File Encryption</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body class="bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 min-h-screen text-white font-sans">
+    <nav class="bg-black bg-opacity-50 p-4 sticky top-0 z-10">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">SecureCrypt</h1>
+            <div class="space-x-4">
+                <a href="#home" class="hover:text-pink-400 transition">Home</a>
+                <a href="#features" class="hover:text-pink-400 transition">Features</a>
+                <a href="#about" class="hover:text-pink-400 transition">About</a>
+            </div>
+        </div>
+    </nav>
+    <section id="home" class="flex flex-col items-center justify-center h-screen text-center">
+        <h2 class="text-5xl font-extrabold animate-pulse mb-6">Secure Your Files with AES-256</h2>
+        <p class="text-lg mb-8 max-w-md">Encrypt or decrypt your files right in your browser. Your data stays safe and private!</p>
+        <div class="flex space-x-6">
+            <button onclick="showTab('encrypt')" class="bg-pink-600 hover:bg-pink-700 px-8 py-4 rounded-full text-lg font-semibold transition transform hover:scale-105">Encrypt</button>
+            <button onclick="showTab('decrypt')" class="bg-indigo-600 hover:bg-indigo-700 px-8 py-4 rounded-full text-lg font-semibold transition transform hover:scale-105">Decrypt</button>
+        </div>
+    </section>
+    <section id="encrypt-tab" class="tab-content container mx-auto py-16 hidden">
+        <div class="bg-white bg-opacity-10 p-8 rounded-lg shadow-lg max-w-lg mx-auto">
+            <h3 class="text-2xl font-bold mb-4">Encrypt a File</h3>
+            <div class="border-2 border-dashed border-pink-400 p-4 rounded-lg text-center" ondrop="handleDrop(event, 'encrypt')" ondragover="event.preventDefault()">
+                <p id="encrypt-file-name" class="text-gray-300">Drag & drop your file here or <label for="encrypt-file-upload" class="text-pink-400 cursor-pointer">click to browse</label></p>
+                <input id="encrypt-file-upload" type="file" class="hidden" onchange="handleFileSelect(event, 'encrypt')">
+            </div>
+            <div class="mt-4">
+                <label for="encrypt-password" class="block text-sm">Encryption Password</label>
+                <input id="encrypt-password" type="password" placeholder="Enter a strong password" class="w-full p-2 rounded bg-gray-800 text-white">
+                <div id="encrypt-password-strength" class="mt-2 text-sm text-gray-400"></div>
+            </div>
+            <button onclick="encryptFile()" class="mt-4 bg-pink-600 hover:bg-pink-700 px-6 py-3 rounded-full w-full font-semibold">Encrypt File</button>
+        </div>
+    </section>
+    <section id="decrypt-tab" class="tab-content container mx-auto py-16 hidden">
+        <div class="bg-white bg-opacity-10 p-8 rounded-lg shadow-lg max-w-lg mx-auto">
+            <h3 class="text-2xl font-bold mb-4">Decrypt a File</h3>
+            <div class="border-2 border-dashed border-indigo-400 p-4 rounded-lg text-center" ondrop="handleDrop(event, 'decrypt')" ondragover="event.preventDefault()">
+                <p id="decrypt-file-name" class="text-gray-300">Select your encrypted file (.enc) or <label for="decrypt-file-upload" class="text-indigo-400 cursor-pointer">click to browse</label></p>
+                <input id="decrypt-file-upload" type="file" accept=".enc" class="hidden" onchange="handleFileSelect(event, 'decrypt')">
+            </div>
+            <div class="mt-4">
+                <label for="decrypt-password" class="block text-sm">Decryption Password</label>
+                <input id="decrypt-password" type="password" placeholder="Enter the password" class="w-full p-2 rounded bg-gray-800 text-white">
+            </div>
+            <button onclick="decryptFile()" class="mt-4 bg-indigo-600 hover:bg-indigo-700 px-6 py-3 rounded-full w-full font-semibold">Decrypt File</button>
+        </div>
+    </section>
+    <footer class="bg-black bg-opacity-70 py-16">
+        <div class="container mx-auto">
+            <section id="features" class="mb-12">
+                <h2 class="text-3xl font-bold text-center mb-8">Why Choose SecureCrypt</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white bg-opacity-10 p-6 rounded-lg text-center">
+                        <h3 class="text-xl font-semibold mb-2">Military-Grade Security</h3>
+                        <p>Uses AES-256 encryption, trusted by governments worldwide.</p>
+                    </div>
+                    <div class="bg-white bg-opacity-10 p-6 rounded-lg text-center">
+                        <h3 class="text-xl font-semibold mb-2">Privacy First</h3>
+                        <p>All processing happens in your browser, no data leaves your device.</p>
+                    </div>
+                    <div class="bg-white bg-opacity-10 p-6 rounded-lg text-center">
+                        <h3 class="text-xl font-semibold mb-2">Lightning Fast</h3>
+                        <p>Optimized for quick encryption, even for large files.</p>
+                    </div>
+                </div>
+            </section>
+            <section id="about" class="mb-12">
+                <h2 class="text-3xl font-bold text-center mb-8">About SecureCrypt</h2>
+                <div class="bg-white bg-opacity-10 p-6 rounded-lg">
+                    <p class="text-center max-w-2xl mx-auto">
+                        SecureCrypt is built with a mission to provide easy-to-use, military-grade file encryption. Your files are encrypted in your browser using AES-256, ensuring complete privacy. Whether it's personal documents or sensitive data, SecureCrypt keeps your digital life secure.
+                    </p>
+                    <p class="text-center mt-4">
+                        An open-source project developed with passion, we welcome community contributions to make SecureCrypt even better!
+                    </p>
+                </div>
+            </section>
+            <div class="text-center">
+                <p>&copy; 2025 SecureCrypt. All rights reserved.</p>
+                <div class="mt-2 space-x-4">
+                    <a href="#" class="hover:text-pink-400">Privacy Policy</a>
+                    <a href="#" class="hover:text-pink-400">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        let selectedFile = null;
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                targetElement.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+        function showTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            document.getElementById(`${tab}-tab`).classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        function handleFileSelect(event, type) {
+            selectedFile = event.target.files[0];
+            if (selectedFile) {
+                document.getElementById(`${type}-file-name`).innerText = `Selected: ${selectedFile.name}`;
+            } else {
+                document.getElementById(`${type}-file-name`).innerText = type === 'encrypt' ? 'Drag & drop your file here or click to browse' : 'Select your encrypted file (.enc) or click to browse';
+            }
+        }
+        function handleDrop(event, type) {
+            event.preventDefault();
+            selectedFile = event.dataTransfer.files[0];
+            if (selectedFile) {
+                document.getElementById(`${type}-file-name`).innerText = `Selected: ${selectedFile.name}`;
+            }
+        }
+        function encryptFile() {
+            if (!selectedFile) {
+                alert('Pehle ek file select karo, bhai!');
+                return;
+            }
+            const password = document.getElementById('encrypt-password').value;
+            if (!password) {
+                alert('Password daal do, bhai!');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const encrypted = CryptoJS.AES.encrypt(e.target.result, password).toString();
+                const blob = new Blob([encrypted], { type: 'text/plain' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `${selectedFile.name}.enc`;
+                link.click();
+                selectedFile = null;
+                document.getElementById('encrypt-file-name').innerText = 'Drag & drop your file here or click to browse';
+                document.getElementById('encrypt-password').value = '';
+            };
+            reader.readAsText(selectedFile);
+        }
+        function decryptFile() {
+            if (!selectedFile || !selectedFile.name.endsWith('.enc')) {
+                alert('Valid .enc file select karo, bhai!');
+                return;
+            }
+            const password = document.getElementById('decrypt-password').value;
+            if (!password) {
+                alert('Password daal do, bhai!');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const decrypted = CryptoJS.AES.decrypt(e.target.result, password).toString(CryptoJS.enc.Utf8);
+                    if (!decrypted) {
+                        alert('Galat password ya corrupted file!');
+                        return;
+                    }
+                    const blob = new Blob([decrypted], { type: 'text/plain' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = selectedFile.name.replace('.enc', '');
+                    link.click();
+                    selectedFile = null;
+                    document.getElementById('decrypt-file-name').innerText = 'Select your encrypted file (.enc) or click to browse';
+                    document.getElementById('decrypt-password').value = '';
+                } catch (e) {
+                    alert('Galat password ya corrupted file!');
+                }
+            };
+            reader.readAsText(selectedFile);
+        }
+    </script>
+</body>
+</html>
+
