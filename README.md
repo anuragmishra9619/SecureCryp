@@ -1,1 +1,1 @@
-# SecureCryp
+# SecureCrypt
